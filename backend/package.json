@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "@langchain/community": "^1.0.0",
+    "@langchain/core": "^1.0.0",
+    "@langchain/google-genai": "^1.0.0",
+    "@supabase/supabase-js": "^2.76.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "langchain": "^0.2.11",
+    "mammoth": "^1.11.0",
+    "zod": "^3.23.8"
+  },
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
