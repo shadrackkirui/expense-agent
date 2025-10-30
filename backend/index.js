@@ -163,6 +163,11 @@ const agentExecutor = new AgentExecutor({
 
 const chatHistory = [];
 
+app.get('/', (req, res) => {
+  res.send('Backend is running!');
+});
+
+
 app.post("/chat", async (req, res) => {
   const { message } = req.body;
 
