@@ -1,12 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
-
+import { v4 as uuidv4 } from "uuid";
 
 function App() {
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [loading, setLoading] = useState(false);
+  // Create a session ID when the component mounts and store it in state.
+  // This ensures the same ID is used for the entire session.
+  const [sessionId] = useState(uuidv4());
+
   const chatContainerRef = useRef(null);
 
   useEffect(() => {
@@ -32,6 +36,7 @@ function App() {
       const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
       const response = await axios.post(`${apiUrl}/chat`, {
         message: message,
+        sessionId: sessionId, // Send the session ID to the backend
       });
 
       const aiResponse = { role: "ai", content: response.data.response };
@@ -51,6 +56,7 @@ function App() {
         <div className="bg-gray-800 text-white p-4 rounded-t-2xl flex items-center">
           <h1 className="text-xl font-bold tracking-wider">Corporate Expenses AI</h1>
         </div>
+        <p class="text-gray-400 justify-end">&copy; 2025 Shadrack Kirui.</p>
 
         <div ref={chatContainerRef} className="flex-1 p-6 overflow-y-auto bg-gray-100">
           <div className="space-y-4">
@@ -99,6 +105,7 @@ function App() {
             <input
               type="text"
               value={message}
+              id="messageInput"
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Ask about the expense policy or submit a claim..."
               className="flex-1 px-4 py-2 bg-gray-100 border-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -161,7 +161,9 @@ const agentExecutor = new AgentExecutor({
 
 // --- 4. DEFINE API ENDPOINT ---
 
-const chatHistory = [];
+// In-memory session storage. For production, you'd want to use a more
+// persistent store like Redis, or store history in your database.
+const sessionHistories = {};
 
 app.get('/', (req, res) => {
   res.send('Backend is running!');
@@ -169,13 +171,20 @@ app.get('/', (req, res) => {
 
 
 app.post("/chat", async (req, res) => {
-  const { message } = req.body;
+  // sessionId should be managed by the client and passed with each request.
+  const { message, sessionId } = req.body;
 
   if (!message) {
     return res.status(400).json({ error: "Message is required" });
   }
+  if (!sessionId) {
+    return res.status(400).json({ error: "Session ID is required" });
+  }
 
   try {
+    // Retrieve or initialize the history for the given session ID
+    const chatHistory = sessionHistories[sessionId] || [];
+
     const result = await agentExecutor.invoke({
       input: message,
       chat_history: chatHistory,
@@ -184,6 +193,7 @@ app.post("/chat", async (req, res) => {
     // Store history
     chatHistory.push({ role: "human", content: message });
     chatHistory.push({ role: "ai", content: result.output });
+    sessionHistories[sessionId] = chatHistory; // Update the session's history
 
     res.json({
       response: result.output,
